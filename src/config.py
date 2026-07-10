@@ -22,11 +22,14 @@ OPENROUTER_API_KEY = os.environ.get("OPENROUTER_API_KEY", "").strip()
 
 # Fallback chain: tried top-to-bottom, first success wins. All free-tier models.
 # Override via env OPENROUTER_MODELS="modelA,modelB,..." (comma-separated).
+# Verified available on OpenRouter's free tier (Jul 2026), ordered by capability.
+# Diverse providers so a single upstream outage/rate-limit doesn't take out the chain.
 _DEFAULT_MODELS = (
-    "deepseek/deepseek-chat-v3-0324:free",
+    "openai/gpt-oss-120b:free",
+    "qwen/qwen3-next-80b-a3b-instruct:free",
+    "google/gemma-4-31b-it:free",
     "meta-llama/llama-3.3-70b-instruct:free",
-    "google/gemini-2.0-flash-exp:free",
-    "qwen/qwen-2.5-72b-instruct:free",
+    "nvidia/nemotron-3-nano-30b-a3b:free",
 )
 OPENROUTER_MODELS = [
     m.strip() for m in os.environ.get("OPENROUTER_MODELS", "").split(",") if m.strip()
