@@ -1,0 +1,54 @@
+# Symbols to analyze in the daily digest.
+# Use NSE tickers as they appear on Yahoo Finance: SYMBOL.NS  (BSE: SYMBOL.BO)
+# Default analysis timeframe is "daily". You can override per-symbol.
+
+watchlist:
+  - symbol: RELIANCE.NS
+  - symbol: TCS.NS
+  - symbol: HDFCBANK.NS
+  - symbol: INFY.NS
+  - symbol: TATAMOTORS.NS
+
+# Indices shown in the market summary (Yahoo Finance tickers).
+indices:
+  - name: "Nifty 50"
+    symbol: "^NSEI"
+  - name: "Sensex"
+    symbol: "^BSESN"
+  - name: "Bank Nifty"
+    symbol: "^NSEBANK"
+  - name: "Nifty IT"
+    symbol: "^CNXIT"
+
+# Global/overnight tickers for the pre-market brief.
+global_markets:
+  - name: "S&P 500"
+    symbol: "^GSPC"
+  - name: "Nasdaq"
+    symbol: "^IXIC"
+  - name: "Dow Jones"
+    symbol: "^DJI"
+  - name: "Nikkei 225"
+    symbol: "^N225"
+  - name: "Hang Seng"
+    symbol: "^HSI"
+
+# RSS feeds for the news job (India markets).
+news_feeds:
+  - "https://economictimes.indiatimes.com/markets/rssfeeds/1977021501.cms"
+  - "https://www.business-standard.com/rss/markets-106.rss"
+  - "https://www.livemint.com/rss/markets"
+  - "https://www.moneycontrol.com/rss/marketreports.xml"
+
+# Optional: only surface news that mentions one of these keywords/tickers.
+# Leave empty [] to get all market headlines.
+news_keywords:
+  - Reliance
+  - TCS
+  - HDFC
+  - Infosys
+  - Tata Motors
+  - Nifty
+  - Sensex
+  - RBI
+  - FII
