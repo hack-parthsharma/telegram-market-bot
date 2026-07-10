@@ -8,7 +8,7 @@ Automated, free stock-market automation for Indian markets (NSE/BSE), delivered 
 |-----|-----------|---------|
 | **Pre-Market Brief** | 08:45 Mon–Fri | Overnight global indices/commodities/FX + India prev close |
 | **Post-Close Digest** | 15:45 Mon–Fri | Index summary + **Nifty 50 breadth**: advances/declines, top gainers/losers, full movers table |
-| **Market News** | 09:00 & 16:30 Mon–Fri | Filtered India-market headlines from RSS |
+| **Market News** | every 30 min, 24/7 | **Fresh** India-market headlines from RSS — only items not sent before (deduped via a cached seen-list) |
 
 Deep per-symbol **AI analysis** (candlestick chart + BUY/SELL/AVOID + entry/SL/target)
 is provided **on demand via interactive mode** (planned) — e.g. `/analyze RELIANCE 5m`.
