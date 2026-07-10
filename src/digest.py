@@ -92,17 +92,10 @@ def post_close():
     header.append(_summary_block("Indices", cfg.get("indices", [])))
     telegram.send_message("\n".join(header))
 
-    # Tier 2: breadth over the full monitor list (all Nifty 50).
+    # Breadth over the full monitor list (all Nifty 50).
     _monitor_report(cfg.get("monitor", []))
-
-    # Tier 1: deep AI analysis + chart for each curated watchlist symbol.
-    for item in cfg.get("watchlist", []):
-        try:
-            _analyze_symbol(item["symbol"], item.get("timeframe", "daily"))
-        except Exception as exc:
-            telegram.send_message(
-                f"⚠️ Could not analyze {html.escape(item['symbol'])}: "
-                f"{html.escape(type(exc).__name__)}")
+    # Deep per-symbol analysis (_analyze_symbol) is kept for on-demand /
+    # interactive use, not the scheduled digest.
 
 
 def pre_market():

@@ -6,9 +6,13 @@ Automated, free stock-market automation for Indian markets (NSE/BSE), delivered 
 
 | Job | When (IST) | Content |
 |-----|-----------|---------|
-| **Pre-Market Brief** | 08:45 Mon–Fri | Overnight global indices + India prev close |
-| **Post-Close Digest** | 15:45 Mon–Fri | Index summary + per-symbol **AI analysis**: candlestick chart (EMA/RSI/volume) with a **BUY / SELL / AVOID** signal, entry/SL/target, and reasoning |
+| **Pre-Market Brief** | 08:45 Mon–Fri | Overnight global indices/commodities/FX + India prev close |
+| **Post-Close Digest** | 15:45 Mon–Fri | Index summary + **Nifty 50 breadth**: advances/declines, top gainers/losers, full movers table |
 | **Market News** | 09:00 & 16:30 Mon–Fri | Filtered India-market headlines from RSS |
+
+Deep per-symbol **AI analysis** (candlestick chart + BUY/SELL/AVOID + entry/SL/target)
+is provided **on demand via interactive mode** (planned) — e.g. `/analyze RELIANCE 5m`.
+The engine already exists (`python run.py test RELIANCE.NS daily`).
 
 - **Data:** `yfinance` (free, no key) — daily & intraday NSE/BSE
 - **Signals:** AI-driven (Google Gemini free tier; Groq swap-in), *grounded* on locally-computed indicators so numbers are real
@@ -57,9 +61,9 @@ Repo → **Actions → Post-Close Digest → Run workflow**. You should get a ch
 ---
 
 ## Customize
-- **Symbols / feeds:** edit `watchlist.yml` (use Yahoo tickers, e.g. `RELIANCE.NS`, `TCS.NS`).
-- **Per-symbol timeframe:** add `timeframe: 5m` under a watchlist entry (options: `5m,15m,30m,1h,daily,weekly`).
+- **Monitored stocks / indices / feeds / keywords:** edit `watchlist.yml` (use Yahoo tickers, e.g. `RELIANCE.NS`).
 - **Schedules:** edit the `cron:` lines in `.github/workflows/*.yml` (times are **UTC**; IST = UTC + 5:30).
+- **On-demand analysis timeframe:** pass it to the engine, e.g. `python run.py test RELIANCE.NS 5m` (options: `5m,15m,30m,1h,daily,weekly`).
 
 ## Run locally (optional)
 ```bash
@@ -72,4 +76,4 @@ python run.py postclose                # full digest
 ## Notes & limits
 - GitHub cron can be delayed a few minutes at peak times — fine for digests.
 - `yfinance` is an unofficial Yahoo feed; occasional gaps are handled per-symbol (one failure won't break the digest).
-- Free AI tiers have rate limits; the watchlist is small by design. If the AI call fails, the bot still sends the chart with an indicator-only note.
+- The scheduled digest makes **no AI calls** (breadth-only), so it never hits AI rate limits. AI is used only by on-demand analysis. If an AI call fails, the bot still sends the chart with an indicator-only note.

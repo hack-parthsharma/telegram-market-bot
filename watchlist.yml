@@ -3,22 +3,11 @@
 #  Tickers use Yahoo Finance format: NSE = SYMBOL.NS , BSE = SYMBOL.BO
 # =====================================================================
 
-# --- TIER 1: WATCHLIST (deep analysis) ---------------------------------
-# Each symbol here gets a FULL treatment in the post-close digest:
-# candlestick chart + AI BUY/SELL/AVOID signal + entry/SL/target + reasoning.
-# Keep this curated (~5-10). Move any symbol from `monitor` up here when you
-# want the deep read. Default timeframe is daily; override with `timeframe:`.
-watchlist:
-  - symbol: RELIANCE.NS
-  - symbol: HDFCBANK.NS
-  - symbol: ICICIBANK.NS
-  - symbol: INFY.NS
-  - symbol: TCS.NS
-  - symbol: TATAMOTORS.NS
-  - symbol: SBIN.NS
-  - symbol: BHARTIARTL.NS
+# Deep per-symbol analysis (chart + AI BUY/SELL/AVOID) is handled on demand
+# via interactive mode (coming later) — e.g. "/analyze RELIANCE 5m".
+# The scheduled digest below is breadth-only: indices + Nifty 50 movers + news.
 
-# --- TIER 2: MONITOR (breadth, no charts) ------------------------------
+# --- MONITOR (breadth, no charts) --------------------------------------
 # ALL Nifty 50. These appear as a compact Top Gainers / Top Losers summary
 # plus a full sorted movers table in the post-close digest — one/two messages,
 # no per-stock charts or AI calls. This is your "don't miss anything" layer.
