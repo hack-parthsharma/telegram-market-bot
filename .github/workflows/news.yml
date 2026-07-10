@@ -2,8 +2,9 @@ name: Market News
 
 on:
   schedule:
-    # Every 30 minutes, around the clock — pushes only headlines not seen before.
-    - cron: "*/30 * * * *"
+    # Every 5 minutes (GitHub's minimum; runs are best-effort and may be
+    # delayed/coalesced under load). Only unseen headlines are pushed.
+    - cron: "*/5 * * * *"
   workflow_dispatch: {}
 
 # Avoid overlapping runs stepping on the shared state.
