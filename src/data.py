@@ -42,6 +42,31 @@ def fetch_ohlc(symbol, timeframe="daily"):
     return df, tf
 
 
+def batch_quotes(symbols):
+    """Last close + % change for many symbols in ONE download (fast).
+
+    Returns {symbol: {"last": float, "pct": float}}; symbols with no data
+    are simply omitted.
+    """
+    symbols = list(dict.fromkeys(symbols))  # de-dupe, keep order
+    if not symbols:
+        return {}
+    df = yf.download(symbols, period="7d", interval="1d", auto_adjust=False,
+                     progress=False, threads=True, group_by="ticker")
+    out = {}
+    for sym in symbols:
+        try:
+            sub = df[sym] if len(symbols) > 1 else df
+            closes = sub["Close"].dropna()
+            if len(closes) < 2:
+                continue
+            last, prev = float(closes.iloc[-1]), float(closes.iloc[-2])
+            out[sym] = {"last": last, "pct": (last - prev) / prev * 100 if prev else 0.0}
+        except Exception:
+            continue
+    return out
+
+
 def quote_snapshot(symbol):
     """Latest close and % change vs previous close (for summaries)."""
     df = yf.download(symbol, period="7d", interval="1d",

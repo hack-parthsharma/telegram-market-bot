@@ -13,14 +13,52 @@ def _fmt_pct(pct):
 
 def _summary_block(title, entries):
     lines = [f"<b>{title}</b>"]
+    quotes = data.batch_quotes([e["symbol"] for e in entries])
     for item in entries:
-        snap = data.quote_snapshot(item["symbol"])
-        if not snap:
+        q = quotes.get(item["symbol"])
+        if not q:
             lines.append(f"• {html.escape(item['name'])}: n/a")
             continue
         lines.append(f"• {html.escape(item['name'])}: "
-                     f"{snap['last']:,.2f}  {_fmt_pct(snap['pct'])}")
+                     f"{q['last']:,.2f}  {_fmt_pct(q['pct'])}")
     return "\n".join(lines)
+
+
+def _monitor_report(entries):
+    """Compact breadth report for a large list (e.g. all Nifty 50): advances/
+    declines, top gainers/losers, and a full sorted movers table. No charts/AI."""
+    if not entries:
+        return
+    quotes = data.batch_quotes([e["symbol"] for e in entries])
+    rows = []
+    for e in entries:
+        q = quotes.get(e["symbol"])
+        if not q:
+            continue
+        name = e.get("name") or e["symbol"].replace(".NS", "").replace(".BO", "")
+        rows.append((name, q["last"], q["pct"]))
+    if not rows:
+        telegram.send_message("📋 <b>Nifty 50 Monitor</b>\nNo data available right now.")
+        return
+
+    rows.sort(key=lambda r: r[2], reverse=True)
+    adv = sum(1 for r in rows if r[2] > 0)
+    dec = sum(1 for r in rows if r[2] < 0)
+    unch = len(rows) - adv - dec
+
+    def line(r):
+        return f"{r[0]:<15}{r[1]:>10,.1f}  {r[2]:>+6.2f}%"
+
+    head = [f"📋 <b>Nifty 50 Monitor</b>  ({len(rows)} stocks)",
+            f"🟢 {adv} advances   🔴 {dec} declines   ⚪ {unch} flat", ""]
+    top = ["<b>Top Gainers</b>", "<pre>"] + [line(r) for r in rows[:10]] + ["</pre>"]
+    bot = ["<b>Top Losers</b>", "<pre>"] + [line(r) for r in rows[-10:][::-1]] + ["</pre>"]
+    telegram.send_message("\n".join(head + top + [""] + bot))
+
+    # Full sorted table (fits well under Telegram's 4096-char limit for 50 rows).
+    full = ["📄 <b>Nifty 50 — full movers (high → low)</b>", "<pre>"]
+    full += [line(r) for r in rows] + ["</pre>"]
+    telegram.send_message("\n".join(full))
 
 
 def _analyze_symbol(symbol, timeframe="daily"):
@@ -54,6 +92,10 @@ def post_close():
     header.append(_summary_block("Indices", cfg.get("indices", [])))
     telegram.send_message("\n".join(header))
 
+    # Tier 2: breadth over the full monitor list (all Nifty 50).
+    _monitor_report(cfg.get("monitor", []))
+
+    # Tier 1: deep AI analysis + chart for each curated watchlist symbol.
     for item in cfg.get("watchlist", []):
         try:
             _analyze_symbol(item["symbol"], item.get("timeframe", "daily"))

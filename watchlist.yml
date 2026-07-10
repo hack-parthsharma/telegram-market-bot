@@ -1,54 +1,217 @@
-# Symbols to analyze in the daily digest.
-# Use NSE tickers as they appear on Yahoo Finance: SYMBOL.NS  (BSE: SYMBOL.BO)
-# Default analysis timeframe is "daily". You can override per-symbol.
+# =====================================================================
+#  Telegram Market Bot — configuration
+#  Tickers use Yahoo Finance format: NSE = SYMBOL.NS , BSE = SYMBOL.BO
+# =====================================================================
 
+# --- TIER 1: WATCHLIST (deep analysis) ---------------------------------
+# Each symbol here gets a FULL treatment in the post-close digest:
+# candlestick chart + AI BUY/SELL/AVOID signal + entry/SL/target + reasoning.
+# Keep this curated (~5-10). Move any symbol from `monitor` up here when you
+# want the deep read. Default timeframe is daily; override with `timeframe:`.
 watchlist:
   - symbol: RELIANCE.NS
-  - symbol: TCS.NS
   - symbol: HDFCBANK.NS
+  - symbol: ICICIBANK.NS
   - symbol: INFY.NS
+  - symbol: TCS.NS
   - symbol: TATAMOTORS.NS
+  - symbol: SBIN.NS
+  - symbol: BHARTIARTL.NS
 
-# Indices shown in the market summary (Yahoo Finance tickers).
+# --- TIER 2: MONITOR (breadth, no charts) ------------------------------
+# ALL Nifty 50. These appear as a compact Top Gainers / Top Losers summary
+# plus a full sorted movers table in the post-close digest — one/two messages,
+# no per-stock charts or AI calls. This is your "don't miss anything" layer.
+monitor:
+  - {name: "Reliance",       symbol: RELIANCE.NS}
+  - {name: "HDFC Bank",      symbol: HDFCBANK.NS}
+  - {name: "Bharti Airtel",  symbol: BHARTIARTL.NS}
+  - {name: "ICICI Bank",     symbol: ICICIBANK.NS}
+  - {name: "SBI",            symbol: SBIN.NS}
+  - {name: "TCS",            symbol: TCS.NS}
+  - {name: "Bajaj Finance",  symbol: BAJFINANCE.NS}
+  - {name: "L&T",            symbol: LT.NS}
+  - {name: "HUL",            symbol: HINDUNILVR.NS}
+  - {name: "Maruti",         symbol: MARUTI.NS}
+  - {name: "Sun Pharma",     symbol: SUNPHARMA.NS}
+  - {name: "Infosys",        symbol: INFY.NS}
+  - {name: "Adani Ent",      symbol: ADANIENT.NS}
+  - {name: "Adani Ports",    symbol: ADANIPORTS.NS}
+  - {name: "Axis Bank",      symbol: AXISBANK.NS}
+  - {name: "Titan",          symbol: TITAN.NS}
+  - {name: "M&M",            symbol: "M&M.NS"}
+  - {name: "Kotak Bank",     symbol: KOTAKBANK.NS}
+  - {name: "ITC",            symbol: ITC.NS}
+  - {name: "NTPC",           symbol: NTPC.NS}
+  - {name: "HDFC Life",      symbol: HDFCLIFE.NS}
+  - {name: "SBI Life",       symbol: SBILIFE.NS}
+  - {name: "Tech Mahindra",  symbol: TECHM.NS}
+  - {name: "BEL",            symbol: BEL.NS}
+  - {name: "Tata Motors",    symbol: TATAMOTORS.NS}
+  - {name: "Tata Steel",     symbol: TATASTEEL.NS}
+  - {name: "JSW Steel",      symbol: JSWSTEEL.NS}
+  - {name: "UltraTech",      symbol: ULTRACEMCO.NS}
+  - {name: "IndiGo",         symbol: INDIGO.NS}
+  - {name: "Wipro",          symbol: WIPRO.NS}
+  - {name: "HCL Tech",       symbol: HCLTECH.NS}
+  - {name: "Shriram Fin",    symbol: SHRIRAMFIN.NS}
+  - {name: "Bajaj Finserv",  symbol: BAJAJFINSV.NS}
+  - {name: "Power Grid",     symbol: POWERGRID.NS}
+  - {name: "Max Health",     symbol: MAXHEALTH.NS}
+  - {name: "Grasim",         symbol: GRASIM.NS}
+  - {name: "ONGC",           symbol: ONGC.NS}
+  - {name: "Tata Consumer",  symbol: TATACONSUM.NS}
+  - {name: "Hindalco",       symbol: HINDALCO.NS}
+  - {name: "Asian Paints",   symbol: ASIANPAINT.NS}
+  - {name: "Bajaj Auto",     symbol: BAJAJ-AUTO.NS}
+  - {name: "Eicher",         symbol: EICHERMOT.NS}
+  - {name: "Apollo Hosp",    symbol: APOLLOHOSP.NS}
+  - {name: "Trent",          symbol: TRENT.NS}
+  - {name: "Coal India",     symbol: COALINDIA.NS}
+  - {name: "Cipla",          symbol: CIPLA.NS}
+  - {name: "Nestle",         symbol: NESTLEIND.NS}
+  - {name: "Eternal",        symbol: ETERNAL.NS}
+  - {name: "Dr Reddy",       symbol: DRREDDY.NS}
+  - {name: "Jio Fin",        symbol: JIOFIN.NS}
+
+# --- INDICES ------------------------------------------------------------
+# Broad + sectoral. Yahoo's coverage of NSE sectoral indices is patchy;
+# any that Yahoo doesn't serve will simply show "n/a" (harmless).
 indices:
-  - name: "Nifty 50"
-    symbol: "^NSEI"
-  - name: "Sensex"
-    symbol: "^BSESN"
-  - name: "Bank Nifty"
-    symbol: "^NSEBANK"
-  - name: "Nifty IT"
-    symbol: "^CNXIT"
+  - {name: "Nifty 50",       symbol: "^NSEI"}
+  - {name: "Sensex",         symbol: "^BSESN"}
+  - {name: "Bank Nifty",     symbol: "^NSEBANK"}
+  - {name: "Nifty IT",       symbol: "^CNXIT"}
+  - {name: "Nifty Auto",     symbol: "^CNXAUTO"}
+  - {name: "Nifty Pharma",   symbol: "^CNXPHARMA"}
+  - {name: "Nifty FMCG",     symbol: "^CNXFMCG"}
+  - {name: "Nifty Metal",    symbol: "^CNXMETAL"}
+  - {name: "Nifty Energy",   symbol: "^CNXENERGY"}
+  - {name: "Nifty Realty",   symbol: "^CNXREALTY"}
+  - {name: "Nifty Infra",    symbol: "^CNXINFRA"}
+  - {name: "Nifty Media",    symbol: "^CNXMEDIA"}
+  - {name: "Nifty PSU Bank", symbol: "^CNXPSUBANK"}
+  - {name: "Nifty Midcap",   symbol: "^NSEMDCP50"}
+  - {name: "Nifty 500",      symbol: "^CRSLDX"}
+  - {name: "India VIX",      symbol: "^INDIAVIX"}
 
-# Global/overnight tickers for the pre-market brief.
+# --- GLOBAL / OVERNIGHT (pre-market brief) ------------------------------
 global_markets:
-  - name: "S&P 500"
-    symbol: "^GSPC"
-  - name: "Nasdaq"
-    symbol: "^IXIC"
-  - name: "Dow Jones"
-    symbol: "^DJI"
-  - name: "Nikkei 225"
-    symbol: "^N225"
-  - name: "Hang Seng"
-    symbol: "^HSI"
+  - {name: "GIFT Nifty*",    symbol: "^NSEI"}      # placeholder; GIFT not on Yahoo
+  - {name: "S&P 500",        symbol: "^GSPC"}
+  - {name: "Nasdaq",         symbol: "^IXIC"}
+  - {name: "Dow Jones",      symbol: "^DJI"}
+  - {name: "FTSE 100",       symbol: "^FTSE"}
+  - {name: "DAX",            symbol: "^GDAXI"}
+  - {name: "Nikkei 225",     symbol: "^N225"}
+  - {name: "Hang Seng",      symbol: "^HSI"}
+  - {name: "Shanghai",       symbol: "000001.SS"}
+  - {name: "Crude (WTI)",    symbol: "CL=F"}
+  - {name: "Brent",          symbol: "BZ=F"}
+  - {name: "Gold",           symbol: "GC=F"}
+  - {name: "USD/INR",        symbol: "INR=X"}
+  - {name: "Dollar Index",   symbol: "DX-Y.NYB"}
+  - {name: "Bitcoin",        symbol: "BTC-USD"}
 
-# RSS feeds for the news job (India markets).
+# --- NEWS FEEDS (RSS) ---------------------------------------------------
 news_feeds:
   - "https://economictimes.indiatimes.com/markets/rssfeeds/1977021501.cms"
+  - "https://economictimes.indiatimes.com/markets/stocks/rssfeeds/2146842.cms"
   - "https://www.business-standard.com/rss/markets-106.rss"
+  - "https://www.business-standard.com/rss/companies-101.rss"
   - "https://www.livemint.com/rss/markets"
+  - "https://www.livemint.com/rss/companies"
   - "https://www.moneycontrol.com/rss/marketreports.xml"
+  - "https://www.moneycontrol.com/rss/business.xml"
+  - "https://www.moneycontrol.com/rss/latestnews.xml"
+  - "https://www.thehindubusinessline.com/markets/feeder/default.rss"
+  - "https://www.financialexpress.com/market/feed/"
+  - "https://www.zeebiz.com/rss/markets.xml"
+  - "https://www.zeebiz.com/rss/india.xml"
 
-# Optional: only surface news that mentions one of these keywords/tickers.
-# Leave empty [] to get all market headlines.
+# --- NEWS KEYWORDS ------------------------------------------------------
+# Only headlines containing one of these are pushed. Set to [] to get ALL
+# market headlines (can be noisy). Includes macro terms + Nifty 50 names.
 news_keywords:
-  - Reliance
-  - TCS
-  - HDFC
-  - Infosys
-  - Tata Motors
+  # Macro / market-wide
   - Nifty
   - Sensex
   - RBI
   - FII
+  - DII
+  - repo rate
+  - inflation
+  - GDP
+  - rupee
+  - crude
+  - IPO
+  - results
+  - earnings
+  - dividend
+  - buyback
+  - upgrade
+  - downgrade
+  - block deal
+  - bulk deal
+  - Q1
+  - Q2
+  - Q3
+  - Q4
+  # Sectors
+  - bank
+  - IT
+  - pharma
+  - auto
+  - metal
+  - FMCG
+  - realty
+  - energy
+  - PSU
+  # Stocks (Nifty 50)
+  - Reliance
+  - HDFC
+  - Airtel
+  - ICICI
+  - SBI
+  - TCS
+  - Bajaj
+  - Larsen
+  - "L&T"
+  - Hindustan Unilever
+  - Maruti
+  - Sun Pharma
+  - Infosys
+  - Adani
+  - Axis
+  - Titan
+  - Mahindra
+  - Kotak
+  - ITC
+  - NTPC
+  - Tech Mahindra
+  - Bharat Electronics
+  - Tata Motors
+  - Tata Steel
+  - JSW
+  - UltraTech
+  - IndiGo
+  - Wipro
+  - HCL
+  - Shriram
+  - Power Grid
+  - Max Healthcare
+  - Grasim
+  - ONGC
+  - Tata Consumer
+  - Hindalco
+  - Asian Paints
+  - Eicher
+  - Apollo
+  - Trent
+  - Coal India
+  - Cipla
+  - Nestle
+  - Zomato
+  - Eternal
+  - Dr Reddy
+  - Jio Financial
