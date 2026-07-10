@@ -6,8 +6,8 @@ Automated, free stock-market automation for Indian markets (NSE/BSE), delivered 
 
 | Job | When (IST) | Content |
 |-----|-----------|---------|
-| **Pre-Market Brief** | 08:45 Mon–Fri | Overnight global indices/commodities/FX + India prev close |
-| **Post-Close Digest** | 15:45 Mon–Fri | Index summary + **Nifty 50 breadth**: advances/declines, top gainers/losers, full movers table |
+| **Pre-Market Brief** | 08:45 Mon–Fri | Overnight global indices/commodities/FX + India prev close + **AI pre-market note** (bias + cues) |
+| **Post-Close Digest** | 15:45 Mon–Fri | Index summary + **Nifty 50 breadth** (advances/declines, top gainers/losers, full movers table) + **AI market wrap** |
 | **Market News** | every 5 min, 24/7 | **Fresh** India-market headlines from RSS — only items not sent before (deduped via a cached seen-list) |
 
 Deep per-symbol **AI analysis** (candlestick chart + BUY/SELL/AVOID + entry/SL/target)
@@ -15,7 +15,7 @@ is provided **on demand via interactive mode** (planned) — e.g. `/analyze RELI
 The engine already exists (`python run.py test RELIANCE.NS daily`).
 
 - **Data:** `yfinance` (free, no key) — daily & intraday NSE/BSE
-- **Signals:** AI-driven (Google Gemini free tier; Groq swap-in), *grounded* on locally-computed indicators so numbers are real
+- **AI:** [OpenRouter](https://openrouter.ai) with a **fallback chain of free models** — if one is rate-limited/down, the next takes over. Insights are *grounded* on the real fetched numbers.
 - **Charts:** `mplfinance` candlesticks sent as photos
 - **Cost:** ₹0 — GitHub Actions free minutes + free API tiers
 
@@ -32,9 +32,10 @@ The engine already exists (`python run.py test RELIANCE.NS daily`).
    `https://api.telegram.org/bot<YOUR_TOKEN>/getUpdates`
    and copy the `"chat":{"id": ...}` number.
 
-### 2. Get a free AI key
-- **Gemini (default):** https://aistudio.google.com/apikey → create key.
-- *or* **Groq:** https://console.groq.com/keys → create key, and set variable `AI_PROVIDER=groq`.
+### 2. Get a free AI key (OpenRouter)
+- Sign up at **https://openrouter.ai** → **Keys** → create a key (starts with `sk-or-...`).
+- The bot uses a built-in fallback chain of free models; override it any time with the
+  `OPENROUTER_MODELS` variable (comma-separated model ids, in priority order).
 
 ### 3. Push this repo to GitHub
 ```bash
@@ -51,9 +52,9 @@ Repo → **Settings → Secrets and variables → Actions → New repository sec
 |--------|-------|
 | `TELEGRAM_BOT_TOKEN` | from BotFather |
 | `TELEGRAM_CHAT_ID` | your chat id |
-| `GEMINI_API_KEY` | from AI Studio (or `GROQ_API_KEY`) |
+| `OPENROUTER_API_KEY` | from openrouter.ai |
 
-Optional **Variables** (not secrets): `AI_PROVIDER`, `GEMINI_MODEL`, `GROQ_MODEL`.
+Optional **Variable** (not a secret): `OPENROUTER_MODELS` to override the model chain.
 
 ### 5. Test it
 Repo → **Actions → Post-Close Digest → Run workflow**. You should get a chart + signal in Telegram within ~1–2 min. The crons then run automatically on schedule.

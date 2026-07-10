@@ -1,12 +1,12 @@
 """AI-driven BUY / SELL / AVOID signal, grounded on computed indicators.
 
 The LLM never sees raw price arrays — only the indicator snapshot dict — so its
-call is cheap and its numbers are grounded. It returns strict JSON.
+call is cheap and its numbers are grounded. It returns strict JSON. Uses the
+shared multi-model fallback chain in ai.py.
 """
 import json
-import requests
 
-from . import config
+from . import ai
 
 SYSTEM = (
     "You are a disciplined technical analyst for Indian equities (NSE/BSE). "
@@ -47,43 +47,10 @@ def _parse(text):
     return data
 
 
-def _call_gemini(prompt):
-    url = (f"https://generativelanguage.googleapis.com/v1beta/models/"
-           f"{config.GEMINI_MODEL}:generateContent?key={config.GEMINI_API_KEY}")
-    body = {
-        "systemInstruction": {"parts": [{"text": SYSTEM}]},
-        "contents": [{"role": "user", "parts": [{"text": prompt}]}],
-        "generationConfig": {"temperature": 0.3, "responseMimeType": "application/json"},
-    }
-    r = requests.post(url, json=body, timeout=60)
-    r.raise_for_status()
-    return r.json()["candidates"][0]["content"]["parts"][0]["text"]
-
-
-def _call_groq(prompt):
-    url = "https://api.groq.com/openai/v1/chat/completions"
-    headers = {"Authorization": f"Bearer {config.GROQ_API_KEY}"}
-    body = {
-        "model": config.GROQ_MODEL,
-        "temperature": 0.3,
-        "response_format": {"type": "json_object"},
-        "messages": [
-            {"role": "system", "content": SYSTEM},
-            {"role": "user", "content": prompt},
-        ],
-    }
-    r = requests.post(url, headers=headers, json=body, timeout=60)
-    r.raise_for_status()
-    return r.json()["choices"][0]["message"]["content"]
-
-
 def get_signal(symbol, timeframe, snap):
     prompt = _prompt(symbol, timeframe, snap)
     try:
-        if config.AI_PROVIDER == "groq":
-            raw = _call_groq(prompt)
-        else:
-            raw = _call_gemini(prompt)
+        raw = ai.complete(SYSTEM, prompt, temperature=0.3)
         return _parse(raw)
     except Exception as exc:  # never let one symbol break the whole digest
         return {
